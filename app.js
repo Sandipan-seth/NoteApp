@@ -3,7 +3,6 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const crypto = require("crypto");
 const path = require("path");
 
 const userModel = require("./models/user");
