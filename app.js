@@ -9,6 +9,10 @@ const path = require("path");
 const userModel = require("./models/user");
 const postModel = require("./models/post");
 const upload = require("./config/multerconfig");
+const { connectDB } = require("./config/mongoDb");
+
+require("dotenv").config();
+connectDB();
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -25,7 +29,7 @@ function isLoggedIn(req,res,next){
     res.redirect("/login");
   }
   else{
-    let data = jwt.verify(req.cookies.token, "shhh"); 
+    let data = jwt.verify(req.cookies.token, process.env.JWT_SECRET); 
     req.user = data;
     next();
   }
@@ -50,15 +54,12 @@ app.post("/create", async (req, res) => {
           password: hash,
         });
 
-        // console.log(newUser);
 
         let token = jwt.sign(
           { email: email, userId: newUser._id, username: newUser.username },
-          "shhh"
+          process.env.JWT_SECRET
         );
         res.cookie("token", token);
-        // console.log(token);
-        // res.send("registered successfully");
         res.redirect("/profile");
       });
     });
